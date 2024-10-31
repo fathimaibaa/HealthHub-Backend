@@ -37,12 +37,14 @@
     "nanoid": "^5.0.7",
     "nodemailer": "^6.9.14",
     "nodemon": "^3.1.4",
+    "npm-check": "^6.0.1",
     "socket.io": "^4.7.5",
     "stripe": "^16.5.0",
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.6",
