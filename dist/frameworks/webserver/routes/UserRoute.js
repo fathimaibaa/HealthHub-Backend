@@ -1,0 +1,74 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const UserController_1 = __importDefault(require("../../../Adapters/UserController"));
+const UserDbRepository_1 = require("../../../App/Interfaces/UserDbRepository");
+const AuthService_1 = require("../../Services/AuthService");
+const UserRepositoryMongodb_1 = require("../../Database/Repositories/UserRepositoryMongodb");
+const AuthServiceInterface_1 = require("../../../App/Service-interface/AuthServiceInterface");
+const DoctorDBRepository_1 = require("../../../App/Interfaces/DoctorDBRepository");
+const DoctorRepositoryMongodb_1 = require("../../Database/Repositories/DoctorRepositoryMongodb");
+const TimeSlotDbRepository_1 = require("../../../App/Interfaces/TimeSlotDbRepository");
+const TimeSlotRepositoryMongodb_1 = require("../../Database/Repositories/TimeSlotRepositoryMongodb");
+const BookingController_1 = __importDefault(require("../../../Adapters/BookingController"));
+const BookingDbRepository_1 = require("../../../App/Interfaces/BookingDbRepository");
+const BookingRepositoryMongodb_1 = require("../../Database/Repositories/BookingRepositoryMongodb");
+const PrescriptionDbRepository_1 = require("../../../App/Interfaces/PrescriptionDbRepository");
+const PrescriptionRepositoryMongodb_1 = require("../../Database/Repositories/PrescriptionRepositoryMongodb");
+const DepartmentRepositoryInterface_1 = require("../../../App/Interfaces/DepartmentRepositoryInterface");
+const DepartmentRepositoryMongodb_1 = require("../../Database/Repositories/DepartmentRepositoryMongodb");
+const AuthMiddleware_1 = __importDefault(require("../Middlewares/AuthMiddleware"));
+const userRoutes = () => {
+    const router = express_1.default.Router();
+    const controller = (0, UserController_1.default)(AuthServiceInterface_1.authServiceInterface, AuthService_1.authService, UserDbRepository_1.userDbRepository, UserRepositoryMongodb_1.userRepositoryMongodb, DoctorDBRepository_1.doctorDbRepository, DoctorRepositoryMongodb_1.doctorRepositoryMongodb, TimeSlotDbRepository_1.timeSlotDbRepository, TimeSlotRepositoryMongodb_1.timeSlotRepositoryMongodb, PrescriptionDbRepository_1.prescriptionDbRepository, PrescriptionRepositoryMongodb_1.prescriptionRepositoryMongodb, DepartmentRepositoryInterface_1.departmentDbRepository, DepartmentRepositoryMongodb_1.departmentRepositoryMongodb);
+    const _bookingController = (0, BookingController_1.default)(UserDbRepository_1.userDbRepository, UserRepositoryMongodb_1.userRepositoryMongodb, DoctorDBRepository_1.doctorDbRepository, DoctorRepositoryMongodb_1.doctorRepositoryMongodb, TimeSlotDbRepository_1.timeSlotDbRepository, TimeSlotRepositoryMongodb_1.timeSlotRepositoryMongodb, BookingDbRepository_1.bookingDbRepository, BookingRepositoryMongodb_1.bookingRepositoryMongodb);
+    router.post('/register', controller.registerUser);
+    router.post('/verify_otp', controller.verifyOtp);
+    router.post("/resend_otp", controller.resendOtp);
+    router.post("/forgot_password", controller.forgotPassword);
+    router.post("/reset_password/:token", controller.resetPassword);
+    router.get("/profile", AuthMiddleware_1.default, controller.userProfile);
+    router.patch("/profile/edit", AuthMiddleware_1.default, controller.updateUserInfo);
+    router.post("/google_signIn", controller.googleSignIn);
+    router.post("/login", controller.userLogin);
+    router.get("/doctors", controller.doctorPage);
+    router.get("/doctor/:id", controller.doctorDetails);
+    // router.get("/timeslots",authenticateUser,controller.getAllTimeSlots);
+    // router.get("/timeslots/:id",authenticateUser,controller.getTimeslots);
+    // router.get("/time-slots/:id/dates",authenticateUser,controller.getDateSlots);
+    router.get('/department/list', controller.listDepartmentsHandler);
+    // router.post("/fetchPrescription",authenticateUser,controller.fetchPrescription);
+    router.post("/uploadDocuments", AuthMiddleware_1.default, controller.labRecords);
+    router.get("/documents/:id", AuthMiddleware_1.default, controller.fetchDocuments);
+    router.delete("/documents/:id", AuthMiddleware_1.default, controller.deleteDocument);
+    /*  Booking Routes for booking Controller  */
+    // router.post("/appointments",authenticateUser,_bookingController.BookAppoinment);
+    // router.get("/allAppoinments",authenticateUser,_bookingController.getAllAppoinments);
+    // router.patch("/payment_status/:id",authenticateUser,_bookingController.updatePaymentStatus);
+    // router.get("/bookingdetails/:id",authenticateUser,_bookingController.getBookingDetails);
+    // router.get("/bookings/:id",authenticateUser,_bookingController.getAllBookingDetails);
+    // router.put("/bookingdetails/:id",authenticateUser,_bookingController.cancelAppoinment);
+    // router.get("/fetchWallet/:id",authenticateUser,controller.getWallet);
+    // router.get("/transactions", authenticateUser, controller.getTransactions);
+    // router.post("/walletPayment",authenticateUser,_bookingController.walletPayment);
+    // router.put("/updateWallet",authenticateUser,_bookingController.changeWalletAmount);
+    // 
+    router.get("/time-slots/:id", AuthMiddleware_1.default, controller.getTimeslots);
+    router.get("/time-slots/:id/dates", AuthMiddleware_1.default, controller.getDateSlots);
+    router.get("/fetchWallet/:id", AuthMiddleware_1.default, controller.getWallet);
+    router.get("/transactions", AuthMiddleware_1.default, controller.getTransactions);
+    router.post("/fetchPrescription", AuthMiddleware_1.default, controller.fetchPrescription);
+    router.post("/appointments", AuthMiddleware_1.default, _bookingController.BookAppoinment); //last booking ......
+    router.get("/allAppoinments", AuthMiddleware_1.default, _bookingController.getAllAppoinments);
+    router.patch("/payment/status/:id", AuthMiddleware_1.default, _bookingController.updatePaymentStatus);
+    router.post("/walletPayment", AuthMiddleware_1.default, _bookingController.walletPayment);
+    router.put("/updateWallet", AuthMiddleware_1.default, _bookingController.changeWalletAmount);
+    router.get("/bookingdetails/:id", AuthMiddleware_1.default, _bookingController.getBookingDetails); //id-bookingid
+    router.get("/bookings/:id", AuthMiddleware_1.default, _bookingController.getAllBookingDetails);
+    router.put("/bookingdetails/:id", AuthMiddleware_1.default, _bookingController.cancelAppoinment);
+    return router;
+};
+exports.default = userRoutes;
