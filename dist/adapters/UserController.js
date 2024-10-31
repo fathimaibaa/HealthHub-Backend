@@ -291,6 +291,16 @@ const userController = (authServiceInterface, authServiceImpl, userDbRepository,
             next(error);
         }
     });
+    const userDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { id } = req.params;
+            const user = yield (0, Profile_1.getUserProfile)(id, dbRepositoryUser);
+            return res.status(HttpStatus_1.HttpStatus.OK).json({ success: true, user });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
     return {
         registerUser,
         verifyOtp,
@@ -312,7 +322,8 @@ const userController = (authServiceInterface, authServiceImpl, userDbRepository,
         fetchDocuments,
         deleteDocument,
         getWallet,
-        getTransactions
+        getTransactions,
+        userDetails
     };
 };
 exports.default = userController;

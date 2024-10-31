@@ -30,32 +30,14 @@ const userRoutes = () => {
     router.post("/resend_otp", controller.resendOtp);
     router.post("/forgot_password", controller.forgotPassword);
     router.post("/reset_password/:token", controller.resetPassword);
-    router.get("/profile", AuthMiddleware_1.default, controller.userProfile);
-    router.patch("/profile/edit", AuthMiddleware_1.default, controller.updateUserInfo);
     router.post("/google_signIn", controller.googleSignIn);
     router.post("/login", controller.userLogin);
     router.get("/doctors", controller.doctorPage);
     router.get("/doctor/:id", controller.doctorDetails);
-    // router.get("/timeslots",authenticateUser,controller.getAllTimeSlots);
-    // router.get("/timeslots/:id",authenticateUser,controller.getTimeslots);
-    // router.get("/time-slots/:id/dates",authenticateUser,controller.getDateSlots);
+    router.get("/user/:id", controller.userDetails);
     router.get('/department/list', controller.listDepartmentsHandler);
-    // router.post("/fetchPrescription",authenticateUser,controller.fetchPrescription);
-    router.post("/uploadDocuments", AuthMiddleware_1.default, controller.labRecords);
-    router.get("/documents/:id", AuthMiddleware_1.default, controller.fetchDocuments);
-    router.delete("/documents/:id", AuthMiddleware_1.default, controller.deleteDocument);
-    /*  Booking Routes for booking Controller  */
-    // router.post("/appointments",authenticateUser,_bookingController.BookAppoinment);
-    // router.get("/allAppoinments",authenticateUser,_bookingController.getAllAppoinments);
-    // router.patch("/payment_status/:id",authenticateUser,_bookingController.updatePaymentStatus);
-    // router.get("/bookingdetails/:id",authenticateUser,_bookingController.getBookingDetails);
-    // router.get("/bookings/:id",authenticateUser,_bookingController.getAllBookingDetails);
-    // router.put("/bookingdetails/:id",authenticateUser,_bookingController.cancelAppoinment);
-    // router.get("/fetchWallet/:id",authenticateUser,controller.getWallet);
-    // router.get("/transactions", authenticateUser, controller.getTransactions);
-    // router.post("/walletPayment",authenticateUser,_bookingController.walletPayment);
-    // router.put("/updateWallet",authenticateUser,_bookingController.changeWalletAmount);
-    // 
+    router.get("/profile", AuthMiddleware_1.default, controller.userProfile);
+    router.patch("/profile/edit", AuthMiddleware_1.default, controller.updateUserInfo);
     router.get("/time-slots/:id", AuthMiddleware_1.default, controller.getTimeslots);
     router.get("/time-slots/:id/dates", AuthMiddleware_1.default, controller.getDateSlots);
     router.get("/fetchWallet/:id", AuthMiddleware_1.default, controller.getWallet);
@@ -69,6 +51,9 @@ const userRoutes = () => {
     router.get("/bookingdetails/:id", AuthMiddleware_1.default, _bookingController.getBookingDetails); //id-bookingid
     router.get("/bookings/:id", AuthMiddleware_1.default, _bookingController.getAllBookingDetails);
     router.put("/bookingdetails/:id", AuthMiddleware_1.default, _bookingController.cancelAppoinment);
+    router.post("/uploadDocuments", AuthMiddleware_1.default, controller.labRecords);
+    router.get("/documents/:id", AuthMiddleware_1.default, controller.fetchDocuments);
+    router.delete("/documents/:id", AuthMiddleware_1.default, controller.deleteDocument);
     return router;
 };
 exports.default = userRoutes;

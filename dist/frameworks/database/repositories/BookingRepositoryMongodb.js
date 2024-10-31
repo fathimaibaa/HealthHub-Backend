@@ -132,7 +132,7 @@ const bookingRepositoryMongodb = () => {
         amountDebit,
         amountCredit,
         checkBookingStatus,
-        getReports,
+        getReports
     };
 };
 exports.bookingRepositoryMongodb = bookingRepositoryMongodb;

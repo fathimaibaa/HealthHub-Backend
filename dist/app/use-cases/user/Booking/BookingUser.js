@@ -55,7 +55,7 @@ const checkIsBooked = (data, userId, bookingDbRepository) => __awaiter(void 0, v
 });
 exports.checkIsBooked = checkIsBooked;
 const createPayment = (userName, email, bookingId, totalAmount) => __awaiter(void 0, void 0, void 0, function* () {
-    const stripe = new stripe_1.default("sk_test_51Phr0W2MEaCJUhJikIT3TUIPISmQMTP7CA1UQ8rxmRrlIamjTe6eHl444qrEYfu501UcongTiXsyUlNyA4UyIn8H00kc40OSMB");
+    const stripe = new stripe_1.default(Config_1.default.STRIPE_SECRET_KEY);
     const customer = yield stripe.customers.create({
         name: userName,
         email: email,
@@ -71,7 +71,7 @@ const createPayment = (userName, email, bookingId, totalAmount) => __awaiter(voi
             {
                 price_data: {
                     currency: "inr",
-                    product_data: { name: "Gue", description: "HealthHub - Doctor Booking" },
+                    product_data: { name: "Guests", description: "HealthHub - Doctor Booking" },
                     unit_amount: Math.round(totalAmount * 100),
                 },
                 quantity: 1,

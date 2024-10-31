@@ -21,10 +21,10 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const BookingUser_1 = require("../App/Use-cases/User/Booking/BookingUser");
-const HttpStatus_1 = require("../Types/HttpStatus");
 const UserAuth_1 = require("../App/Use-cases/User/Auth/UserAuth");
+const HttpStatus_1 = require("../Types/HttpStatus");
 const Timeslot_1 = require("../App/Use-cases/Doctor/Timeslot");
-const BookingController = (userDbRepository, userRepositoryImpl, doctorDbRepository, doctorDbRepositoryImpl, timeSlotDbRepository, timeSlotDbRepositoryImpl, bookingDbRepository, bookingDbRepositoryImpl) => {
+const bookingController = (userDbRepository, userRepositoryImpl, doctorDbRepository, doctorDbRepositoryImpl, timeSlotDbRepository, timeSlotDbRepositoryImpl, bookingDbRepository, bookingDbRepositoryImpl) => {
     const dbRepositoryUser = userDbRepository(userRepositoryImpl());
     const dbDoctorRepository = doctorDbRepository(doctorDbRepositoryImpl());
     const dbTimeSlotRepository = timeSlotDbRepository(timeSlotDbRepositoryImpl());
@@ -60,94 +60,7 @@ const BookingController = (userDbRepository, userRepositoryImpl, doctorDbReposit
             next(error);
         }
     });
-    const updatePaymentStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const { id } = req.params;
-            const { paymentStatus } = req.body;
-            const updateStatus = yield (0, BookingUser_1.updateBookingStatusPayment)(id, dbBookingRepository);
-            yield (0, BookingUser_1.updateBookingStatus)(id, paymentStatus, dbBookingRepository);
-            res
-                .status(HttpStatus_1.HttpStatus.OK)
-                .json({ success: true, message: "Booking status updated" });
-        }
-        catch (error) {
-            next(error);
-        }
-    });
-    const cancelAppoinment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const { appoinmentStatus } = req.body;
-            const { cancelReason } = req.body;
-            const { refundAmount } = req.body;
-            const { id } = req.params;
-            const { doctorId, timeSlot, date } = yield (0, BookingUser_1.changeAppoinmentstaus)(appoinmentStatus, cancelReason, refundAmount, id, dbBookingRepository);
-            if (doctorId && timeSlot && date) {
-                yield (0, Timeslot_1.UpdateTheTimeslot)(doctorId, timeSlot, date, dbTimeSlotRepository);
-            }
-            res
-                .status(HttpStatus_1.HttpStatus.OK)
-                .json({ success: true, message: "Cancel Appoinment" });
-        }
-        catch (error) {
-            next(error);
-        }
-    });
-    const getBookingDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const { id } = req.params;
-            const data = yield (0, BookingUser_1.getBookingByBookingId)(id, dbBookingRepository);
-            res.status(HttpStatus_1.HttpStatus.OK).json({
-                success: true,
-                message: "Bookings details fetched successfully",
-                data,
-            });
-        }
-        catch (error) {
-            next(error);
-        }
-    });
-    const getAllBookingDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const { id } = req.params;
-            const data = yield (0, BookingUser_1.getBookingByUserId)(id, dbBookingRepository);
-            res.status(HttpStatus_1.HttpStatus.OK).json({
-                success: true,
-                message: "Bookings details fetched successfully",
-                data,
-            });
-        }
-        catch (error) {
-            next(error);
-        }
-    });
-    const getAllAppoinments = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const userID = req.user;
-            const bookings = yield (0, BookingUser_1.getBookingByUserId)(userID, dbBookingRepository);
-            res.status(HttpStatus_1.HttpStatus.OK).json({
-                success: true,
-                message: "Bookings fetched successfully",
-                bookings,
-            });
-        }
-        catch (error) {
-            next(error);
-        }
-    });
-    const getAppoinmentList = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            const { id } = req.params;
-            const data = yield (0, BookingUser_1.getBookingByDoctorId)(id, dbBookingRepository);
-            res.status(HttpStatus_1.HttpStatus.OK).json({
-                success: true,
-                message: "Bookings details fetched successfully",
-                data,
-            });
-        }
-        catch (error) {
-            next(error);
-        }
-    });
+    /**wallet payment */
     const walletPayment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const data = req.body;
@@ -184,6 +97,8 @@ const BookingController = (userDbRepository, userRepositoryImpl, doctorDbReposit
             next(error);
         }
     });
+    // ..............................................................................
+    /**update the wallet  */
     const changeWalletAmount = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { bookingId, fees } = req.body;
@@ -197,6 +112,116 @@ const BookingController = (userDbRepository, userRepositoryImpl, doctorDbReposit
             next(error);
         }
     });
+    /**
+  * *METHOD :PATCH
+  * * Update payment status and table slot information if payment status is failed
+  */
+    const updatePaymentStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { id } = req.params;
+            const { paymentStatus } = req.body;
+            const updateStatus = yield (0, BookingUser_1.updateBookingStatusPayment)(id, dbBookingRepository);
+            yield (0, BookingUser_1.updateBookingStatus)(id, paymentStatus, dbBookingRepository);
+            res
+                .status(HttpStatus_1.HttpStatus.OK)
+                .json({ success: true, message: "Booking status updated" });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+    /* method put update cancelappoinment*/
+    const cancelAppoinment = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { appoinmentStatus } = req.body;
+            const { cancelReason } = req.body;
+            const { refundAmount } = req.body;
+            const { id } = req.params;
+            const { doctorId, timeSlot, date } = yield (0, BookingUser_1.changeAppoinmentstaus)(appoinmentStatus, cancelReason, refundAmount, id, dbBookingRepository);
+            if (doctorId && timeSlot && date) {
+                yield (0, Timeslot_1.UpdateTheTimeslot)(doctorId, timeSlot, date, dbTimeSlotRepository);
+            }
+            res
+                .status(HttpStatus_1.HttpStatus.OK)
+                .json({ success: true, message: "Cancel Appoinment" });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+    /*
+     * * METHOD :GET
+     * * Retrieve booking details by bookingId
+     */
+    const getBookingDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { id } = req.params;
+            const data = yield (0, BookingUser_1.getBookingByBookingId)(id, dbBookingRepository);
+            res.status(HttpStatus_1.HttpStatus.OK).json({
+                success: true,
+                message: "Bookings details fetched successfully",
+                data,
+            });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+    /*
+     * * METHOD :GET
+     * * Retrieve booking details by user id
+     */
+    const getAllBookingDetails = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { id } = req.params;
+            const data = yield (0, BookingUser_1.getBookingByUserId)(id, dbBookingRepository);
+            res.status(HttpStatus_1.HttpStatus.OK).json({
+                success: true,
+                message: "Bookings details fetched successfully",
+                data,
+            });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+    /**
+     * *METHOD :GET
+     * * Retrieve all bookings done by user
+     */
+    const getAllAppoinments = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const userID = req.user;
+            const bookings = yield (0, BookingUser_1.getBookingByUserId)(userID, dbBookingRepository);
+            res.status(HttpStatus_1.HttpStatus.OK).json({
+                success: true,
+                message: "Bookings fetched successfully",
+                bookings,
+            });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+    /*
+     * * METHOD :GET
+     * * Retrieve Appoinments details by doctor id
+     */
+    const getAppoinmentList = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { id } = req.params;
+            const data = yield (0, BookingUser_1.getBookingByDoctorId)(id, dbBookingRepository);
+            res.status(HttpStatus_1.HttpStatus.OK).json({
+                success: true,
+                message: "Bookings details fetched successfully",
+                data,
+            });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+    /* method put update appoinmentStatus*/
     const appoinmentStatus = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { appoinmentStatus } = req.body;
@@ -222,4 +247,4 @@ const BookingController = (userDbRepository, userRepositoryImpl, doctorDbReposit
         appoinmentStatus
     };
 };
-exports.default = BookingController;
+exports.default = bookingController;

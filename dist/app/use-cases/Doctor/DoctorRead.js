@@ -9,8 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPatientFullDetails = exports.getPatients = void 0;
+exports.getSingleUser = exports.getPatientFullDetails = exports.getPatients = void 0;
 const getPatients = (bookingDbRepository) => __awaiter(void 0, void 0, void 0, function* () { return yield bookingDbRepository.getAllPatients(); });
 exports.getPatients = getPatients;
 const getPatientFullDetails = (id, bookingDbRepository) => __awaiter(void 0, void 0, void 0, function* () { return yield bookingDbRepository.getSinglePatient(id); });
 exports.getPatientFullDetails = getPatientFullDetails;
+const getSingleUser = (id, userDbRepository) => __awaiter(void 0, void 0, void 0, function* () { return yield userDbRepository.getUserbyId(id); });
+exports.getSingleUser = getSingleUser;
