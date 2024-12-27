@@ -13,7 +13,7 @@ const ErrorhandleMiddleware_1 = __importDefault(require("./Frameworks/Webserver/
 const CustomError_1 = __importDefault(require("./Utils/CustomError"));
 const socket_io_1 = require("socket.io");
 const Socket_1 = __importDefault(require("./Frameworks/Webserver/WebSocket/Socket"));
-// import path from "path";
+const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 const server = http_1.default.createServer(app);
 (0, ExpressConfig_1.default)(app);
@@ -25,9 +25,7 @@ const io = new socket_io_1.Server(server, {
         credentials: true,
     },
 });
-// app.use(
-//   express.static(path.join(__dirname, "../../Frontend/dist"))
-// );
+app.use(express_1.default.static(path_1.default.join(__dirname, "../../Frontend/dist")));
 (0, Socket_1.default)(io);
 (0, Index_1.default)(app);
 (0, Server_1.default)(server).startServer();

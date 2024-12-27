@@ -26,11 +26,7 @@ const socketConfig = (io: Server) => {
     return users.find((user) => user.userId === userId);
   }
 
-  // Get all online users
-  function getOnlineUsers() {
-    return users.map((user) => user.userId);
-  }
-
+ 
   io.on("connection", (socket) => {
     console.log("User connected");
 
@@ -72,19 +68,7 @@ const socketConfig = (io: Server) => {
       });
     });
 
-    // Handle typing status
-    socket.on("typing", ({ receiverId, isTyping, userId }) => {
-      console.log('typing event in backend',receiverId, isTyping, userId);
-      
-      const user = getUser(receiverId);
-      console.log('usersdockert',user);
-      
-      if (user) {
-        console.log('inm=',users);
-        
-        io.to(user.socketId).emit("senderTyping", isTyping, userId);
-      }
-    });
+    
 
     // When user disconnects, remove them from users array
     socket.on("disconnect", () => {
