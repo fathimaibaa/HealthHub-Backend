@@ -10,45 +10,38 @@ import { Server } from "socket.io";
 import socketConfig from "./Frameworks/Webserver/WebSocket/Socket";
 import path from "path";
 
-const app: Application = express();
+
+const app : Application = express();
+
 const server = http.createServer(app);
 
-expressConfig(app); // General Express configuration
-connectDb(); // Connect to the database
+expressConfig(app);
+
+connectDb();
 
 const io = new Server(server, {
     cors: {
-        origin: true,
-        methods: ["GET", "POST"],
-        credentials: true,
+      origin: true,
+      methods: ["GET", "POST"],
+      credentials: true,
     },
-});
+  });
 
-socketConfig(io); // Configure WebSocket
+  app.use(
+    express.static(path.join(__dirname, "../../Frontend/dist"))
+  );
 
-// Serve static files from the frontend build directory
-app.use(express.static(path.join(__dirname, "../../Frontend/dist")));
 
-// Root route for the backend
-app.get("/", (req, res) => {
-    res.send("Welcome to the backend server!");
-});
+  socketConfig(io);
 
-// Backend API routes
+
+
+
 routes(app);
+serverConfig(server).startServer()
 
-// Fallback to serve index.html for React routing (frontend)
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../../Frontend/dist/index.html"));
-});
+app.use(errorHandlingMiddleware)
 
-// Start the server
-serverConfig(server).startServer();
-
-// Error-handling middleware
-app.use(errorHandlingMiddleware);
-
-// Catch-all handler for undefined routes (ensure this is last)
-app.all("*", (req, res, next: NextFunction) => {
+app.all("*",(req, res, next: NextFunction)=>{
     next(new CustomError(`Not found : ${req.url}`, 404));
 });
