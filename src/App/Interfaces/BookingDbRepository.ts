@@ -46,6 +46,7 @@ export const bookingDbRepository = (
 
   const changeWallet = async(fee:number,userId:string)=>
     await repository.changeWalletMoney(fee,userId);
+  
 
   const changeTheWalletAmount = async(fees:any,UserId:any)=>{
     await repository.changeTheWallet(fees,UserId);
@@ -90,4 +91,4 @@ export const bookingDbRepository = (
     }
   }
 
-  export type BookingDbRepositoryInterface = typeof bookingDbRepository;
+  export type BookingDbRepositoryInterface = typeof bookingDbRepository; 
