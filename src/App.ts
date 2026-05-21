@@ -73,12 +73,14 @@ const server = http.createServer(app);
 
 /* 🔴 MUST BE FIRST */
 
-const allowedOrigins = [
+const allowedOrigins: string[] = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
-  process.env.CLIENT_PORT,
-
 ];
+
+if (process.env.CLIENT_URL) {
+  allowedOrigins.push(process.env.CLIENT_URL);
+}
 
 app.use(
   cors({
