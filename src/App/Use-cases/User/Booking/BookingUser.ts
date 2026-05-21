@@ -97,7 +97,7 @@ export const createPayment = async (
         country: "US",
       },
     });
-    console.log("CLIENT_PORT =>", configKeys.CLIENT_PORT);
+    console.log("CLIENT_URL =>", configKeys.CLIENT_URL);
 
     const session = await stripe.checkout.sessions.create({
         
@@ -114,8 +114,8 @@ export const createPayment = async (
         },
       ],
       mode: "payment",
-      success_url: `${configKeys.CLIENT_PORT}/payment_status/${bookingId}?success=true`,
-      cancel_url: `${configKeys.CLIENT_PORT}/payment_status/${bookingId}?success=false`,
+      success_url: `${configKeys.CLIENT_URL}/payment_status/${bookingId}?success=true`,
+      cancel_url: `${configKeys.CLIENT_URL}/payment_status/${bookingId}?success=false`,
     });
     return session.id;
   };
