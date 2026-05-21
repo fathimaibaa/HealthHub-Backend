@@ -236,11 +236,14 @@ const userController = (authServiceInterface, authServiceImpl, userDbRepository,
     });
     const labRecords = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         try {
-            const { documents } = req.body;
+            const { documents, appointmentId } = req.body;
+            if (!appointmentId) {
+                throw new Error("appointmentId missing");
+            }
             const { id } = req.body;
             const data = documents;
             const appoinmentId = id;
-            const response = yield (0, PrescriptionUseCase_1.uploadLabDocuments)(appoinmentId, data, dbPrescriptionRepository);
+            const response = yield (0, PrescriptionUseCase_1.uploadLabDocuments)(appointmentId, documents, dbPrescriptionRepository);
             res.status(HttpStatus_1.HttpStatus.OK).json({ sucess: true, response });
         }
         catch (error) {
