@@ -46,9 +46,8 @@ const bookingController=(
         next:NextFunction,
     )=>{
         try {
-            // const data = req.body;
-            // const userId = req.user;
-            const {userId, ...data} = req.body
+            const userId = req.user as string;
+            const data = req.body;
 
 
             const checkBooking:any = await checkIsBooked(
@@ -143,6 +142,15 @@ const bookingController=(
 
           const walletTransaction = await walletDebit(userId,requiredAmount,dbBookingRepository);
           const walletChange=await changeWalletAmounti(userId,requiredAmount,dbBookingRepository)
+
+          if (createBooking) {
+            await UpdateTimeslot(
+              data.doctorId,
+              data.timeSlot,
+              data.date,
+              dbTimeSlotRepository
+            );
+          }
 
           res.status(HttpStatus.OK).json({
             success: true,

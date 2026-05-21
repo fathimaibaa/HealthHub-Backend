@@ -72,16 +72,29 @@ const app: Application = express();
 const server = http.createServer(app);
 
 /* 🔴 MUST BE FIRST */
-app.use(cors({
-  origin: "https://health-hub-frontend.vercel.app",
-  credentials: true,
-}));
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(null, false);
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 expressConfig(app);
-connectDb();
 
 /* 🔴 ROUTES AFTER CORS */
 routes(app);
@@ -89,7 +102,7 @@ routes(app);
 /* 🔴 SOCKET.IO AFTER CORS */
 const io = new Server(server, {
   cors: {
-    origin: "https://health-hub-frontend.vercel.app",
+    origin: allowedOrigins,
     credentials: true,
   },
 });
@@ -100,13 +113,18 @@ app.get("/", (req, res) => {
   res.send("HealthHub Backend is running!");
 });
 
-app.use(errorHandlingMiddleware);
-
 app.all("*", (req, res, next: NextFunction) => {
   next(new CustomError(`Not found : ${req.url}`, 404));
 });
 
-serverConfig(server).startServer();
+app.use(errorHandlingMiddleware);
+
+const bootstrap = async () => {
+  await connectDb();
+  serverConfig(server).startServer();
+};
+
+bootstrap();
 
 
 

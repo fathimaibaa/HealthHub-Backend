@@ -7,11 +7,11 @@ import chatRoute from "./ChatRoutes";
 
 
 const routes = (app: Application) => {
-    app.use("/api/user", userRoutes);
-    app.use("/api/doctor",doctorRoutes);
-    app.use('/api/admin',adminRoutes);
-    app.use("/api/token", refreshTokenRoute);
-    app.use("/api/chat", chatRoute);   
+    app.use("/api/user", userRoutes());
+    app.use("/api/doctor", doctorRoutes());
+    app.use("/api/admin", adminRoutes());
+    app.use("/api/token", refreshTokenRoute());
+    app.use("/api/chat", chatRoute());
     
     
    

@@ -28,7 +28,7 @@ export const authService = () =>{
         };
 
         const accessToken = jwt.sign(payload, configKeys.ACCESS_SECRET, {
-            expiresIn: "20s",
+            expiresIn: "15m",
           });
           const refreshToken = jwt.sign(payload, configKeys.REFRESH_SECRET, {
             expiresIn: "2d",
@@ -46,7 +46,7 @@ export const authService = () =>{
             role,
         };
         const accessToken = jwt.sign(payload, configKeys.ACCESS_SECRET, {
-            expiresIn: "20s",
+            expiresIn: "15m",
           });
           const refreshToken = jwt.sign(payload, configKeys.REFRESH_SECRET, {
             expiresIn: "2d",
