@@ -352,11 +352,19 @@ const labRecords = async(
   next:NextFunction
 )=>{
   try {
-    const {documents} = req.body;
+    const { documents, appointmentId } = req.body;
+
+if (!appointmentId) {
+  throw new Error("appointmentId missing");
+}
     const {id} = req.body
     const data = documents;
     const appoinmentId = id;
-    const response = await uploadLabDocuments(appoinmentId,data,dbPrescriptionRepository);
+   const response = await uploadLabDocuments(
+  appointmentId,
+  documents,
+  dbPrescriptionRepository
+);
     res.status(HttpStatus.OK).json({sucess:true,response});
   } catch (error) {
     next(error);
