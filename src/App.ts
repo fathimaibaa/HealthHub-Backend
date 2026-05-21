@@ -73,22 +73,25 @@ const server = http.createServer(app);
 
 /* 🔴 MUST BE FIRST */
 
-const allowedOrigins: string[] = [
+const allowedOrigins = [
   "http://localhost:5173",
   "http://127.0.0.1:5173",
+  "https://health-hub-frontend.vercel.app",
 ];
-
-if (process.env.CLIENT_URL) {
-  allowedOrigins.push(process.env.CLIENT_URL);
-}
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+
+      const isAllowed = allowedOrigins.some((o) =>
+        origin.startsWith(o)
+      );
+
+      if (isAllowed) {
         callback(null, true);
       } else {
-        callback(null, false);
+        callback(new Error("CORS blocked"), false);
       }
     },
     credentials: true,
@@ -106,7 +109,15 @@ routes(app);
 /* 🔴 SOCKET.IO AFTER CORS */
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      const isAllowed = allowedOrigins.some((o) =>
+        origin.startsWith(o)
+      );
+
+      callback(null, isAllowed);
+    },
     credentials: true,
   },
 });
